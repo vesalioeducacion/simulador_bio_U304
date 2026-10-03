@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIOLOGÍA - Primera Semana del Desarrollo Embrionario (UCCuyo)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX for ultra-fast LaTeX formulas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <!-- FontAwesome for biomedical icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Outfit & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f7f9f6;
+        }
+        /* Paleta Institucional Verde Oliva UCCuyo */
+        .text-accent { color: #436600; }
+        .bg-accent { background-color: #436600; }
+        .bg-accent-hover:hover { background-color: #324d00; }
+        .bg-accent-light { background-color: #f1f6eb; }
+        .border-accent { border-color: #436600; }
+
+        .text-primary { color: #436600; }
+        .bg-primary { background-color: #436600; }
+        .bg-primary-dark { background-color: #324d00; }
+        .border-primary { border-color: #436600; }
+        
+        .focus-accent:focus {
+            border-color: #436600;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 102, 0, 0.2);
+        }
+
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        canvas {
+            touch-action: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-800">
+
+    <!-- Cabecera Institucional UCCuyo -->
+    <header class="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-accent flex items-center justify-center text-white font-bold text-xl shadow-md">
+                    B
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-gray-800 tracking-wide uppercase">BIOLOGÍA CELULAR & GENÉTICA</h1>
+                    <p class="text-xs text-gray-500 font-semibold">PreMédico (Facultad de Cs. Médicas - UCCuyo)</p>
+                </div>
+            </div>
+            <!-- Botón Guía de Uso -->
+            <button onclick="openTutorial()" class="flex items-center gap-1.5 px-3 py-1.5 bg-accent text-white text-xs font-semibold rounded-lg shadow-sm hover:opacity-90 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Guía de Uso
+            </button>
+        </div>
+    </header>
+
+    <!-- Contenido Principal con Menú Lateral -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 flex flex-col lg:flex-row gap-6">
+        
+        <!-- Menú de Navegación Lateral -->
+        <nav class="w-full lg:w-64 flex flex-row lg:flex-col gap-2 bg-white p-3 rounded-2xl shadow-sm border border-gray-100 overflow-x-auto lg:overflow-x-visible whitespace-nowrap lg:whitespace-normal sticky top-20 h-fit">
+            <button onclick="switchTab(1)" id="btn-tab-1" class="bg-accent text-white flex-1 lg:flex-none text-left py-2.5 px-4 rounded-xl text-sm font-semibold transition">
+                1. Camino & Capacitación
+            </button>
+            <button onclick="switchTab(2)" id="btn-tab-2" class="text-gray-700 hover:bg-gray-100 flex-1 lg:flex-none text-left py-2.5 px-4 rounded-xl text-sm font-medium transition">
+                2. Barreras & Polispermia
+            </button>
+            <button onclick="switchTab(3)" id="btn-tab-3" class="text-gray-700 hover:bg-gray-100 flex-1 lg:flex-none text-left py-2.5 px-4 rounded-xl text-sm font-medium transition">
+                3. Singamia & Gemelación
+            </button>
+            <button onclick="switchTab(4)" id="btn-tab-4" class="text-gray-700 hover:bg-gray-100 flex-1 lg:flex-none text-left py-2.5 px-4 rounded-xl text-sm font-medium transition">
+                4. Segmentación & Blastocisto
+            </button>
+        </nav>
+
+        <!-- Contenedores de Sección -->
+        <div class="flex-1 overflow-hidden space-y-6">
+            
+            <!-- ==================== MÓDULO 1: CAMINO Y CAPACITACIÓN ==================== -->
+            <section id="module-1" class="module-content block space-y-6">
+                <!-- Header Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h2 class="text-xl font-bold text-gray-800 mb-1">El Camino de los Espermatozoides y la Capacitación</h2>
+                    <p class="text-xs text-gray-500">
+                        De los aproximadamente \(200 \times 10^6\) espermatozoides depositados en el fondo de saco vaginal, solo menos de \(200\) alcanzan la ampolla tubárica. La travesía requiere motilidad flagelar propia, contracciones miometriales estimuladas por prostaglandinas seminales y el acondicionamiento funcional de la capacitación espermática.
+                    </p>
+                    <div class="bg-accent-light border border-accent/20 p-3.5 rounded-xl text-center my-3 overflow-x-auto custom-scroll">
+                        <div class="text-accent font-semibold text-xs uppercase tracking-wide mb-1.5">Dinámica Poblacional y Cronología Fecundante</div>
+                        <div class="text-xs sm:text-sm text-gray-900 font-medium inline-block min-w-full">
+                            $$\text{Inóculo Inicial: } \sim 200 \times 10^6 \ \longrightarrow \ \text{Llegada a Ampolla: } < 200 \text{ gametos} \ (\sim 7 \text{ h de capacitación})$$
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulación en Canvas y Controles -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Simulador de Carrera y Filtración Espermática</h3>
+                            <span class="text-xs text-gray-500">Tránsito por el cuello uterino, cavidad uterina y trompa de Falopio.</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="runMod1Simulation()" class="bg-accent hover:bg-accent-hover text-white px-4 py-2 rounded-xl text-xs font-semibold transition shadow-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-play"></i> <span>Simular Carrera</span>
+                            </button>
+                            <button onclick="resetMod1Simulation()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-xl text-xs font-semibold transition">
+                                <i class="fa-solid fa-rotate-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Mod 1 -->
+                    <div class="relative w-full h-72 rounded-xl overflow-hidden bg-slate-900 shadow-inner flex items-center justify-center">
+                        <canvas id="canvas-mod1" class="w-full h-full cursor-pointer"></canvas>
+                        <div id="mod1-overlay" class="absolute bottom-3 left-3 bg-white/95 border border-gray-200 p-3 rounded-xl text-xs shadow-md max-w-sm backdrop-blur">
+                            <div class="font-bold text-accent mb-0.5 flex items-center gap-1">
+                                <i class="fa-solid fa-chart-line"></i> <span>Población en Tránsito:</span>
+                            </div>
+                            <div id="mod1-stats" class="text-gray-700">Población inicial: \(200 \times 10^6\) espermatozoides. Presione "Simular Carrera".</div>
+                        </div>
+                    </div>
+
+                    <!-- Tarjetas de Capacitación y Ventana Fértil -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-accent uppercase tracking-wider block mb-1">Capacitación Espermática (~7 horas)</span>
+                                <p class="text-xs text-gray-600 leading-relaxed mb-3">
+                                    Acondicionamiento fisiológico en el tracto reproductor femenino: remoción de la cubierta de glucoproteínas plasmáticas seminales y colesterol de la membrana acrosómica, facilitando la hiperactivación flagelar.
+                                </p>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-lg border border-gray-200 text-xs text-gray-700 space-y-1">
+                                <div class="flex justify-between"><span>Duración promedio:</span> <strong class="text-gray-900 code-font">~7 horas</strong></div>
+                                <div class="flex justify-between"><span>Sitio anatómico:</span> <strong class="text-gray-900">Útero y Trompa Uterina</strong></div>
+                                <div class="flex justify-between"><span>Efecto biológico:</span> <strong class="text-accent">Competencia fecundante activa</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider block mb-1">Ventana Fértil y Transporte</span>
+                                <p class="text-xs text-gray-600 leading-relaxed mb-3">
+                                    La fecundación ocurre óptimamente dentro de las \(12\) a \(24\text{ horas}\) posteriores a la ovulación en la ampolla tubárica. El ovocito secundario detenido en Metafase II degenera si no es fecundado en ese lapso.
+                                </p>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-lg border border-gray-200 text-xs text-gray-700 space-y-1">
+                                <div class="flex justify-between"><span>Viabilidad del ovocito:</span> <strong class="text-gray-900 code-font">\(12 - 24\text{ h}\) post-ovulación</strong></div>
+                                <div class="flex justify-between"><span>Sobrevida del espermatozoide:</span> <strong class="text-gray-900 code-font">Hasta \(48 - 72\text{ h}\)</strong></div>
+                                <div class="flex justify-between"><span>Estado del gameto femenino:</span> <strong class="text-emerald-700">Ovocito II en Metafase II</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== MÓDULO 2: BARRERAS Y POLISPERMIA ==================== -->
+            <section id="module-2" class="module-content hidden space-y-6">
+                <!-- Header Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h2 class="text-xl font-bold text-gray-800 mb-1">Barreras Ovocitarias, Reacción Acrosómica y Polispermia</h2>
+                    <p class="text-xs text-gray-500">
+                        El gameto capacitado atraviesa la corona radiada (células foliculares) y se une a la glucoproteína \(\text{ZP3}\) de la zona pelúcida, induciendo la reacción acrosómica y liberación de enzimas líticas (hialuronidasa y acrosina).
+                    </p>
+                    <div class="bg-accent-light border border-accent/20 p-3.5 rounded-xl text-center my-3 overflow-x-auto custom-scroll">
+                        <div class="text-accent font-semibold text-xs uppercase tracking-wide mb-1.5">Mecanismos Defensivos contra la Polispermia</div>
+                        <div class="text-xs sm:text-sm text-gray-900 font-medium inline-block min-w-full">
+                            $$\text{Bloqueo Rápido (Eléctrico: Despolarización)} \ \longrightarrow \ \text{Bloqueo Lento (Onda de } \text{Ca}^{2+} \text{ + Gránulos Corticales)}$$
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Canvas Ovocito y ZP3 -->
+                    <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Penetración de Capas Protectoras</h3>
+                                <span class="text-[11px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-mono">Corona Radiada + ZP3</span>
+                            </div>
+                            <div class="relative w-full h-80 rounded-xl overflow-hidden bg-slate-900 shadow-inner flex items-center justify-center">
+                                <canvas id="canvas-mod2" class="w-full h-full cursor-pointer"></canvas>
+                                <div class="absolute bottom-3 left-3 bg-white/95 border border-gray-200 p-2.5 rounded-xl text-xs shadow-md backdrop-blur">
+                                    <span class="text-accent font-bold">Interacción:</span> Haga clic sobre el ovocito para activar la reacción y el bloqueo.
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-gray-500 mt-2 text-center">
+                            La unión a \(\text{ZP3}\) desencadena la liberación acrosomal y la fusión de membranas plasmáticas gaméticas.
+                        </p>
+                    </div>
+
+                    <!-- Comparativa de Bloqueos -->
+                    <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between space-y-4">
+                        <div>
+                            <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-2">Bloqueo de la Polispermia</h3>
+                            <p class="text-xs text-gray-500 mb-3">
+                                La entrada de múltiples espermatozoides generaría triploidía y aborto espontáneo precoz. El ovocito responde en dos etapas coordinadas:
+                            </p>
+
+                            <div class="space-y-3">
+                                <div class="bg-gray-50 p-3 rounded-xl border border-gray-200">
+                                    <span class="text-xs font-bold text-accent uppercase tracking-wider block mb-1">1. Bloqueo Rápido (Eléctrico)</span>
+                                    <p class="text-xs text-gray-600 leading-relaxed">
+                                        Despolarización eléctrica transitoria de la membrana plasmática del ovocito producida milisegundos tras la fusión inicial, impidiendo la adherencia de espermatozoides adicionales.
+                                    </p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-xl border border-gray-200">
+                                    <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider block mb-1">2. Bloqueo Lento (Reacción Cortical)</span>
+                                    <p class="text-xs text-gray-600 leading-relaxed">
+                                        Onda intracelular masiva de iones calcio (\(\text{Ca}^{2+}\)) que estimula la exocitosis de gránulos corticales. Sus enzimas hidrolíticas inactivan los receptores \(\text{ZP3}\) y endurecen la zona pelúcida.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="triggerPolyspermyDemo()" class="w-full bg-accent hover:bg-accent-hover text-white font-semibold py-2.5 rounded-xl text-xs transition shadow-sm flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-bolt"></i> <span>Disparar Onda de Calcio (\(\text{Ca}^{2+}\))</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== MÓDULO 3: SINGAMIA Y GEMELACIÓN ==================== -->
+            <section id="module-3" class="module-content hidden space-y-6">
+                <!-- Header Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h2 class="text-xl font-bold text-gray-800 mb-1">Singamia, Restablecimiento Diploide y Laboratorio de Gemelación</h2>
+                    <p class="text-xs text-gray-500">
+                        La fusión del espermatozoide reactiva la meiosis II del ovocito, expulsando el segundo corpúsculo polar. La aproximación y fusión de los pronúcleos masculino y femenino (singamia) reconstituye el genoma diploide (\(2n = 46\) cromosomas).
+                    </p>
+                    <div class="bg-accent-light border border-accent/20 p-3.5 rounded-xl text-center my-3 overflow-x-auto custom-scroll">
+                        <div class="text-accent font-semibold text-xs uppercase tracking-wide mb-1.5">Restablecimiento del Número Diploide de la Especie</div>
+                        <div class="text-xs sm:text-sm text-gray-900 font-medium inline-block min-w-full">
+                            $$n \text{ (Pronúcleo Femenino: } 23\text{) } + \ n \text{ (Pronúcleo Masculino: } 23\text{) } \ = \ 2n \text{ (Cigoto: } 46\text{, } \text{XX} \text{ o } \text{XY)}$$
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparador de Gemelos -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Gemelos Dicigóticos -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm">
+                                    <i class="fa-solid fa-users"></i>
+                                </span>
+                                <div>
+                                    <h3 class="font-bold text-gray-800 text-sm">Gemelos Dicigóticos (Mellizos)</h3>
+                                    <span class="text-[11px] text-gray-500">Polivulación independiente (~70% de gemelaciones)</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-600 leading-relaxed mb-4">
+                                Se originan por la fecundación de <strong>dos ovocitos secundarios distintos</strong> por <strong>dos espermatozoides independientes</strong> en el mismo ciclo ovárico. Poseen genomas distintos (\(50\%\) de identidad genética compartida, igual que dos hermanos nacidos en épocas diferentes). Pueden ser del mismo o diferente sexo y presentan placentas y sacos amnióticos separados.
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 text-xs text-gray-700 flex justify-between items-center">
+                            <span>Origen Embriológico:</span>
+                            <strong class="text-blue-700 code-font">2 Cigotos Independientes</strong>
+                        </div>
+                    </div>
+
+                    <!-- Gemelos Monocigóticos -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">
+                                    <i class="fa-solid fa-fingerprint"></i>
+                                </span>
+                                <div>
+                                    <h3 class="font-bold text-gray-800 text-sm">Gemelos Monocigóticos (Idénticos)</h3>
+                                    <span class="text-[11px] text-gray-500">División embrionaria precoz (~30% de gemelaciones)</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-600 leading-relaxed mb-4">
+                                Se originan por la división y gemación de un <strong>único embrión</strong> (frecuentemente durante el estadio de mórula o por duplicación del macizo celular interno en el blastocisto). Poseen exactamente el mismo genotipo (\(100\%\) de identidad cromosómica), comparten obligatoriamente el mismo sexo cromosómico y grupo sanguíneo.
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 text-xs text-gray-700 flex justify-between items-center">
+                            <span>Origen Embriológico:</span>
+                            <strong class="text-emerald-700 code-font">1 Cigoto Dividido</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== MÓDULO 4: SEGMENTACIÓN, MÓRULA Y BLASTOCISTO ==================== -->
+            <section id="module-4" class="module-content hidden space-y-6">
+                <!-- Header Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h2 class="text-xl font-bold text-gray-800 mb-1">Segmentación, Mórula y Formación del Blastocisto (Primera Semana)</h2>
+                    <p class="text-xs text-gray-500">
+                        La segmentación consiste en mitosis sucesivas de clivaje dentro de la zona pelúcida no distensible. Las células resultantes (blastómeras) disminuyen de tamaño con cada ciclo. A partir de las \(16\) células se forma la mórula y, con la cavitación por líquido endometrial, se estructura el blastocisto.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Canvas y Selector Cronológico -->
+                    <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                        <div>
+                            <div class="flex flex-wrap justify-between items-center gap-2 mb-3">
+                                <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Evolución Cronológica</h3>
+                                <select id="embryo-day-select" onchange="changeEmbryoDay(this.value)" class="bg-gray-50 text-xs text-gray-800 border border-gray-200 rounded-xl px-3 py-1.5 font-semibold focus-accent">
+                                    <option value="1">Día 1 (~30 horas - 2 Blastómeras)</option>
+                                    <option value="2">Día 2 (4 a 8 Blastómeras)</option>
+                                    <option value="3">Días 3-4 (Mórula ~16 Células)</option>
+                                    <option value="5">Día 5 (Blastocisto con Blastocele)</option>
+                                </select>
+                            </div>
+
+                            <div class="relative w-full h-80 rounded-xl overflow-hidden bg-slate-900 shadow-inner flex items-center justify-center">
+                                <canvas id="canvas-mod4" class="w-full h-full"></canvas>
+                                <div id="mod4-info-badge" class="absolute bottom-3 left-3 bg-white/95 border border-gray-200 p-3 rounded-xl text-xs shadow-md max-w-sm backdrop-blur">
+                                    <div class="font-bold text-accent mb-0.5" id="mod4-title-label">Día 1: Primera División Mitótica</div>
+                                    <div class="text-gray-700" id="mod4-desc-label">Estadio bicelular. Blastómeras totipotentes contenidas dentro de la zona pelúcida intacta.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-gray-500 mt-2 text-center">
+                            La zona pelúcida rígida previene la implantación ectópica en la trompa durante la segmentación.
+                        </p>
+                    </div>
+
+                    <!-- Diferenciación del Blastocisto -->
+                    <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between space-y-4">
+                        <div>
+                            <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-2">Diferenciación Temprana del Blastocisto</h3>
+                            <p class="text-xs text-gray-500 mb-3">
+                                Con la entrada a la cavidad uterina al día \(4-5\), el líquido endometrial penetra a través de la zona pelúcida formando la cavidad del <strong>blastocele</strong>. Se diferencian dos linajes celulares primordiales:
+                            </p>
+
+                            <div class="space-y-3">
+                                <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-200">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-accent"></span>
+                                        <span class="text-xs font-bold text-gray-800 uppercase">Embrioblasto (MCI)</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 leading-relaxed">
+                                        Masa Celular Interna situada en un polo del blastocisto. Células pluripotentes que originarán todos los tejidos embrionarios definitivos (ectodermo, mesodermo y endodermo).
+                                    </p>
+                                </div>
+
+                                <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-200">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
+                                        <span class="text-xs font-bold text-gray-800 uppercase">Trofoblasto</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 leading-relaxed">
+                                        Capa monocelular periférica que tapiza la cavidad. Precursor directo del saco coriónico, membrana placentaria y la porción fetal de la placenta.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-accent-light border border-accent/20 p-3 rounded-xl text-xs text-gray-800 text-center">
+                            <strong class="text-accent">Nutrición Histotrófica:</strong> El blastocisto temprano se nutre de secreciones glandulares ricas en glucógeno ("leche uterina").
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer Institucional -->
+    <footer class="bg-white border-t border-gray-200 py-4 mt-8 text-center text-xs text-gray-500">
+        Desarrollado por vesalio - Todos los derechos reservados
+    </footer>
+
+    <!-- MODAL: GUÍA DE USO -->
+    <div id="tutorial-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto custom-scroll">
+            <div class="flex items-center justify-between border-b pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-accent"></span>
+                    <h3 class="text-base font-bold text-gray-800 uppercase tracking-wide">Guía de Uso del Simulador</h3>
+                </div>
+                <button onclick="closeTutorial()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+            </div>
+            
+            <div class="space-y-4 text-xs text-gray-600 leading-relaxed">
+                <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-100">
+                    <span class="font-bold text-gray-800 text-xs block mb-1">Propósito Pedagógico (Curso de Ingreso a Medicina - UCCuyo):</span>
+                    Este simulador interactivo permite dominar las transformaciones morfofisiológicas y genéticas de la primera semana del desarrollo embrionario humano: el transporte y acondicionamiento espermático, las barreras del ovocito secundario, los bloqueos eléctrico y cortical de la polispermia, la singamia nuclear con restauración de la dotación diploide (\(2n = 46\)), los mecanismos de gemelación y la transición de clivaje desde el cigoto hasta el blastocisto diferenciado en embrioblasto y trofoblasto.
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-gray-800 text-sm mb-1 text-accent">1. Módulo 1: El Camino de los Espermatozoides y la Capacitación</h4>
+                    <ul class="list-disc list-inside space-y-1 ml-1 text-gray-600">
+                        <li><strong>Simulador de Carrera en Canvas 2D:</strong> Presione <em>"Simular Carrera"</em> para observar en tiempo real la natación flagelar de los gametos masculinos a lo largo del tracto femenino hacia la ampolla tubárica. El panel inferior cuantifica dinámicamente el drástico filtrado demográfico: desde los \(\sim 200 \times 10^6\) espermatozoides eyaculados hasta menos de \(200\) que alcanzan el ovocito.</li>
+                        <li><strong>Capacitación Espermática (~7 horas):</strong> Describe el reacondicionamiento bioquímico en el útero y trompas uterinas: remoción de la cubierta glucoproteica y colesterol de la membrana plasmática acrosómica, otorgando hiperactivación flagelar y competencia fecundante.</li>
+                        <li><strong>Ventana Fértil y Transporte:</strong> Detalla la cronología de viabilidad biológica: el ovocito secundario detenido en Metafase II tiene una ventana óptima de \(12\) a \(24\text{ horas}\) post-ovulación, mientras que los espermatozoides pueden sobrevivir de \(48\) a \(72\text{ horas}\) en el tracto reproductor femenino.</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-gray-800 text-sm mb-1 text-accent">2. Módulo 2: Barreras Ovocitarias, Reacción Acrosómica y Polispermia</h4>
+                    <ul class="list-disc list-inside space-y-1 ml-1 text-gray-600">
+                        <li><strong>Capas Protectoras y Reconocimiento Específico:</strong> Identificación gráfica concéntrica de la corona radiada (células de la granulosa) y la zona pelúcida estructurada por la glucoproteína receptora \(\text{ZP3}\).</li>
+                        <li><strong>Reacción Acrosómica Interactiva:</strong> Al hacer clic directamente sobre el ovocito en el Canvas, se simula la fijación a \(\text{ZP3}\) y la exocitosis de enzimas líticas (hialuronidasa y acrosina) que permiten la penetración de la zona pelúcida.</li>
+                        <li><strong>Simulador de Bloqueos de Polispermia:</strong> El botón <em>"Disparar Onda de Calcio (\(\text{Ca}^{2+}\))"</em> activa la simulación del bloqueo cortical:
+                            <ol class="list-decimal list-inside ml-2 space-y-0.5 mt-1">
+                                <li><strong>Bloqueo Rápido (Eléctrico):</strong> Despolarización inmediata de la membrana del ovocito en milisegundos tras la fusión inicial.</li>
+                                <li><strong>Bloqueo Lento (Cortical):</strong> Onda de \(\text{Ca}^{2+}\) que gatilla la exocitosis de gránulos corticales, inactivando \(\text{ZP3}\) y endureciendo irreversiblemente la zona pelúcida para prevenir triploidías letales.</li>
+                            </ol>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-gray-800 text-sm mb-1 text-accent">3. Módulo 3: Singamia y Laboratorio de Gemelación</h4>
+                    <ul class="list-disc list-inside space-y-1 ml-1 text-gray-600">
+                        <li><strong>Singamia y Restablecimiento Diploide:</strong> Analiza la reanudación y término de la Meiosis II del ovocito (expulsión del segundo corpúsculo polar), el desarrollo de los pronúcleos masculino y femenino, y su fusión nuclear definitiva (singamia) que reconstruye la dotación diploide (\(2n = 46\), \(44+\text{XX}\) o \(44+\text{XY}\)).</li>
+                        <li><strong>Laboratorio Comparativo de Gemelos:</strong> Panel de contraste genético y embriológico:
+                            <ol class="list-decimal list-inside ml-2 space-y-0.5 mt-1">
+                                <li><strong>Gemelos Dicigóticos (Mellizos):</strong> Fecundación independiente de dos ovocitos por dos espermatozoides distintos. Comparten el \(50\%\) de genes (igual que hermanos comunes) y pueden tener igual o diferente sexo.</li>
+                                <li><strong>Gemelos Monocigóticos (Idénticos):</strong> División y gemación precoz de un único cigoto en etapa de mórula o blastocisto. Comparten el \(100\%\) de identidad genética y obligatoriamente el mismo sexo cromosómico.</li>
+                            </ol>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-gray-800 text-sm mb-1 text-accent">4. Módulo 4: Segmentación, Mórula y Formación del Blastocisto</h4>
+                    <ul class="list-disc list-inside space-y-1 ml-1 text-gray-600">
+                        <li><strong>Línea de Tiempo del Clivaje en Canvas 2D:</strong> Selector cronológico interactivo para examinar la mitosis de segmentación dentro de la zona pelúcida no distensible:
+                            <ol class="list-decimal list-inside ml-2 space-y-0.5 mt-1">
+                                <li><strong>Día 1 (~30 horas):</strong> Primer clivaje completo formando \(2\) blastómeras totipotentes.</li>
+                                <li><strong>Día 2:</strong> Estadio de \(4\) a \(8\) células de menor tamaño individual.</li>
+                                <li><strong>Días 3 a 4:</strong> Compactación celular que origina la <strong>mórula</strong> (\(\sim 16\) blastómeras).</li>
+                                <li><strong>Día 5:</strong> Cavitación por líquido endometrial ("leche uterina") que forma el <strong>blastocele</strong>.</li>
+                            </ol>
+                        </li>
+                        <li><strong>Diferenciación de Poblaciones Celulares del Blastocisto:</strong> Visualización simultánea del <strong>Embrioblasto</strong> (masa celular interna pluripotente en un polo, origen del embrión) y del <strong>Trofoblasto</strong> (capa externa epitelial, origen de la placenta y membranas fetales).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-3 border-t flex justify-end">
+                <button onclick="closeTutorial()" class="px-5 py-2 bg-accent text-white text-xs font-semibold rounded-xl hover:bg-accent-hover transition shadow-sm">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script del Simulador -->
+    <script>
+        // Modal Guía de Uso
+        function openTutorial() {
+            document.getElementById('tutorial-modal').classList.remove('hidden');
+        }
+        function closeTutorial() {
+            document.getElementById('tutorial-modal').classList.add('hidden');
+        }
+
+        // Navegación de Pestañas
+        function switchTab(modNum) {
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById(`btn-tab-${i}`);
+                const mod = document.getElementById(`module-${i}`);
+                if (i === modNum) {
+                    btn.className = "bg-accent text-white flex-1 lg:flex-none text-left py-2.5 px-4 rounded-xl text-sm font-semibold transition";
+                    mod.classList.remove('hidden');
+                    mod.classList.add('block');
+                } else {
+                    btn.className = "text-gray-700 hover:bg-gray-100 flex-1 lg:flex-none text-left py-2.5 px-4 rounded-xl text-sm font-medium transition";
+                    mod.classList.remove('block');
+                    mod.classList.add('hidden');
+                }
+            }
+
+            setTimeout(() => {
+                resizeCanvases();
+                if (modNum === 1) initMod1Canvas();
+                if (modNum === 2) initMod2Canvas();
+                if (modNum === 4) initMod4Canvas(document.getElementById('embryo-day-select').value);
+                renderKaTeX();
+            }, 50);
+        }
+
+        function renderKaTeX() {
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '\\[', right: '\\]', display: true},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '$', right: '$', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
+        // ==================== MÓDULO 1: SPRINT ESPERMÁTICO ====================
+        let mod1AnimId = null;
+        let sperms = [];
+
+        function initMod1Canvas() {
+            const canvas = document.getElementById('canvas-mod1');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0) {
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+            }
+
+            sperms = [];
+            for (let i = 0; i < 60; i++) {
+                sperms.push({
+                    x: Math.random() * (canvas.width * 0.3),
+                    y: Math.random() * canvas.height,
+                    speed: 1.5 + Math.random() * 2.5,
+                    wiggleSpeed: 0.1 + Math.random() * 0.2,
+                    yBase: 0,
+                    active: true
+                });
+                sperms[i].yBase = sperms[i].y;
+            }
+            drawMod1(ctx, canvas);
+        }
+
+        function drawMod1(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Fondo tracto femenino
+            let grad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            grad.addColorStop(0, '#0f172a');
+            grad.addColorStop(0.7, '#1e293b');
+            grad.addColorStop(1, '#064e3b');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Ovocito secundario en la ampolla
+            ctx.beginPath();
+            ctx.arc(canvas.width - 60, canvas.height / 2, 38, 0, Math.PI * 2);
+            ctx.fillStyle = '#10b981';
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#34d399';
+            ctx.stroke();
+
+            // Etiqueta ovocito
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 11px Outfit, sans-serif';
+            ctx.fillText('Ovocito II', canvas.width - 86, canvas.height / 2 - 46);
+
+            // Espermatozoides
+            sperms.forEach((s) => {
+                if (!s.active) return;
+                s.x += s.speed;
+                s.y = s.yBase + Math.sin(s.x * s.wiggleSpeed) * 12;
+
+                if (s.x > canvas.width - 98) {
+                    s.x = canvas.width - 98;
+                }
+
+                // Cabeza
+                ctx.beginPath();
+                ctx.ellipse(s.x, s.y, 5, 3, 0, 0, Math.PI * 2);
+                ctx.fillStyle = '#38bdf8';
+                ctx.fill();
+
+                // Flagelo
+                ctx.beginPath();
+                ctx.moveTo(s.x - 5, s.y);
+                ctx.quadraticCurveTo(s.x - 15, s.y + Math.sin(s.x * 0.2) * 8, s.x - 24, s.y);
+                ctx.strokeStyle = '#93c5fd';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            });
+        }
+
+        function runMod1Simulation() {
+            const canvas = document.getElementById('canvas-mod1');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let frame = 0;
+
+            function loop() {
+                drawMod1(ctx, canvas);
+                frame++;
+                if (frame < 120) {
+                    mod1AnimId = requestAnimationFrame(loop);
+                    let pop = Math.max(200, Math.floor(200 * Math.pow(0.95, frame)));
+                    document.getElementById('mod1-stats').innerHTML = `Población en tránsito: <strong>~${pop} millones</strong> (Filtración por moco cervical y fagocitosis leucocitaria).`;
+                } else {
+                    document.getElementById('mod1-stats').innerHTML = `¡Llegada a la ampolla tubárica! Menos de <strong>200 espermatozoides</strong> alcanzan el ovocito tras ~7h de capacitación.`;
+                }
+            }
+            if (mod1AnimId) cancelAnimationFrame(mod1AnimId);
+            loop();
+        }
+
+        function resetMod1Simulation() {
+            if (mod1AnimId) cancelAnimationFrame(mod1AnimId);
+            initMod1Canvas();
+            document.getElementById('mod1-stats').innerHTML = `Población inicial: \\(200 \\times 10^6\\) espermatozoides. Presione "Simular Carrera".`;
+            renderKaTeX();
+        }
+
+        // ==================== MÓDULO 2: BARRERAS Y POLISPERMIA ====================
+        function initMod2Canvas() {
+            const canvas = document.getElementById('canvas-mod2');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0) {
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+            }
+            drawMod2Scene(ctx, canvas, false);
+
+            canvas.onclick = function() {
+                triggerPolyspermyDemo();
+            };
+        }
+
+        function drawMod2Scene(ctx, canvas, calciumWave) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let cx = canvas.width / 2;
+            let cy = canvas.height / 2;
+
+            // Corona radiada
+            ctx.beginPath();
+            ctx.arc(cx, cy, 100, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(245, 158, 11, 0.12)';
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
+            ctx.setLineDash([4, 4]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Zona pelúcida
+            ctx.beginPath();
+            ctx.arc(cx, cy, 70, 0, Math.PI * 2);
+            ctx.fillStyle = calciumWave ? 'rgba(16, 185, 129, 0.25)' : 'rgba(217, 119, 6, 0.25)';
+            ctx.fill();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = calciumWave ? '#10b981' : '#f59e0b';
+            ctx.stroke();
+
+            // Ovocito secundario
+            ctx.beginPath();
+            ctx.arc(cx, cy, 52, 0, Math.PI * 2);
+            ctx.fillStyle = '#1e3a8a';
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#60a5fa';
+            ctx.stroke();
+
+            // Onda de calcio
+            if (calciumWave) {
+                ctx.fillStyle = '#34d399';
+                for (let i = 0; i < 18; i++) {
+                    let angle = (i / 18) * Math.PI * 2;
+                    let rx = cx + Math.cos(angle) * 38;
+                    let ry = cy + Math.sin(angle) * 38;
+                    ctx.beginPath();
+                    ctx.arc(rx, ry, 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Etiquetas
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 11px Outfit, sans-serif';
+            ctx.fillText('Corona Radiada', cx - 44, cy - 108);
+            ctx.fillText('Zona Pelúcida (ZP3)', cx - 58, cy - 76);
+            ctx.fillText('Ovocito II', cx - 26, cy + 4);
+        }
+
+        function triggerPolyspermyDemo() {
+            const canvas = document.getElementById('canvas-mod2');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            drawMod2Scene(ctx, canvas, true);
+            setTimeout(() => {
+                drawMod2Scene(ctx, canvas, false);
+            }, 3000);
+        }
+
+        // ==================== MÓDULO 4: SEGMENTACIÓN & BLASTOCISTO ====================
+        function initMod4Canvas(day) {
+            const canvas = document.getElementById('canvas-mod4');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0) {
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+            }
+            drawEmbryoDay(ctx, canvas, day);
+        }
+
+        function changeEmbryoDay(day) {
+            const canvas = document.getElementById('canvas-mod4');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            drawEmbryoDay(ctx, canvas, day);
+
+            const infoMap = {
+                "1": { title: "Día 1 (~30 horas - 2 Blastómeras)", desc: "Estadio bicelular. Blastómeras totipotentes dentro de la zona pelúcida intacta." },
+                "2": { title: "Día 2 (4 a 8 Blastómeras)", desc: "Clivaje acelerado sin aumento del volumen global total." },
+                "3": { title: "Días 3-4 (Mórula ~16 Células)", desc: "Estructura sólida y compactada. Inicio de uniones estrechas celulares." },
+                "5": { title: "Día 5 (Blastocisto / Trofoblasto & MCI)", desc: "Aparece la cavidad del blastocele. Diferenciación en Embrioblasto y Trofoblasto." }
+            };
+            document.getElementById('mod4-title-label').innerText = infoMap[day].title;
+            document.getElementById('mod4-desc-label').innerText = infoMap[day].desc;
+        }
+
+        function drawEmbryoDay(ctx, canvas, day) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let cx = canvas.width / 2;
+            let cy = canvas.height / 2;
+
+            // Zona Pelúcida exterior común
+            ctx.beginPath();
+            ctx.arc(cx, cy, 72, 0, Math.PI * 2);
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = '#f59e0b';
+            ctx.fillStyle = 'rgba(245, 158, 11, 0.05)';
+            ctx.fill();
+            ctx.stroke();
+
+            if (day === "1") {
+                // 2 blastómeras
+                drawBlastomere(ctx, cx - 24, cy, 24, '#436600');
+                drawBlastomere(ctx, cx + 24, cy, 24, '#324d00');
+            } else if (day === "2") {
+                // 4-8 blastómeras
+                const r = 21;
+                drawBlastomere(ctx, cx - 20, cy - 20, r, '#436600');
+                drawBlastomere(ctx, cx + 20, cy - 20, r, '#324d00');
+                drawBlastomere(ctx, cx - 20, cy + 20, r, '#527c00');
+                drawBlastomere(ctx, cx + 20, cy + 20, r, '#3f6000');
+            } else if (day === "3") {
+                // Mórula 16 células
+                for (let i = 0; i < 12; i++) {
+                    let angle = (i / 12) * Math.PI * 2;
+                    let rx = cx + Math.cos(angle) * 24;
+                    let ry = cy + Math.sin(angle) * 24;
+                    drawBlastomere(ctx, rx, ry, 15, '#10b981');
+                }
+                for (let i = 0; i < 4; i++) {
+                    let angle = (i / 4) * Math.PI * 2 + Math.PI / 4;
+                    let rx = cx + Math.cos(angle) * 9;
+                    let ry = cy + Math.sin(angle) * 9;
+                    drawBlastomere(ctx, rx, ry, 13, '#059669');
+                }
+            } else if (day === "5") {
+                // Blastocisto
+                // Anillo trofoblasto
+                ctx.beginPath();
+                ctx.arc(cx, cy, 58, 0, Math.PI * 2);
+                ctx.lineWidth = 9;
+                ctx.strokeStyle = '#9333ea';
+                ctx.fillStyle = 'rgba(147, 51, 234, 0.12)';
+                ctx.fill();
+                ctx.stroke();
+
+                // Blastocele
+                ctx.beginPath();
+                ctx.arc(cx - 6, cy, 36, 0, Math.PI * 2);
+                ctx.fillStyle = '#0f172a';
+                ctx.fill();
+
+                // Embrioblasto
+                ctx.beginPath();
+                ctx.arc(cx + 20, cy - 10, 18, 0, Math.PI * 2);
+                ctx.fillStyle = '#436600';
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#a3e635';
+                ctx.stroke();
+
+                // Etiquetas en Canvas
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 10px Outfit, sans-serif';
+                ctx.fillText('Trofoblasto', cx - 68, cy - 65);
+                ctx.fillText('Embrioblasto (MCI)', cx + 4, cy - 32);
+                ctx.fillText('Blastocele', cx - 26, cy + 6);
+            }
+        }
+
+        function drawBlastomere(ctx, x, y, r, color) {
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.stroke();
+        }
+
+        function resizeCanvases() {
+            document.querySelectorAll('canvas').forEach(canvas => {
+                const rect = canvas.getBoundingClientRect();
+                if (rect.width > 0 && rect.height > 0) {
+                    canvas.width = rect.width;
+                    canvas.height = rect.height;
+                }
+            });
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvases();
+            initMod1Canvas();
+            initMod2Canvas();
+            initMod4Canvas(document.getElementById('embryo-day-select').value);
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            resizeCanvases();
+            switchTab(1);
+            renderKaTeX();
+        });
+    </script>
+</body>
+</html>
